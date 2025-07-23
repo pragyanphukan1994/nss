@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Volunteer Profile</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Volunteer Profile</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<button onclick="history.back()">← Back</button>
-<div id="profileDetail" class="profile-detail"></div>
 
-<script src="data.js"></script>
-<script>
-const query = new URLSearchParams(location.search);
-const roll = query.get("roll");
-loadProfile("https://docs.google.com/spreadsheets/d/e/2PACX-1vTQzQsyW7zG7MjJEMkhI-87dgz8Ov6GMRWA6gCib2g_AQPqrT3GNdZ4F8YRrg3hRcEwgSaDOJr1JcZS/pub?gid=402553846&single=true&output=csv", "Roll No", roll, "profileDetail");
-</script>
+  <button onclick="history.back()">← Back</button>
+  <div id="profileDetail" class="profile-detail"></div>
+
+  <script src="data.js"></script>
+  <script>
+    const query = new URLSearchParams(location.search);
+    const roll = query.get("roll");
+    loadProfile("https://docs.google.com/spreadsheets/d/e/2PACX-1vTQzQsyW7zG7MjJEMkhI-87dgz8Ov6GMRWA6gCib2g_AQPqrT3GNdZ4F8YRrg3hRcEwgSaDOJr1JcZS/pub?gid=402553846&single=true&output=csv", "Roll No", roll, "profileDetail");
+  </script>
 </body>
 </html>
