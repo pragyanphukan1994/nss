@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Volunteer Profile</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<button onclick="history.back()">← Back</button>
+<div id="profileDetail" class="profile-detail"></div>
+
+<script src="data.js"></script>
+<script>
+const query = new URLSearchParams(location.search);
+const roll = query.get("roll");
+loadProfile("https://docs.google.com/spreadsheets/d/e/YOUR_SHEET_ID/pub?output=csv", "Roll No", roll, "profileDetail");
+</script>
+</body>
+</html>
