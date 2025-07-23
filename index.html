@@ -1,25 +1,85 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My First Simple HTML Page</title>
+  <title>Volunteer Profiles</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 2em;
-      background-color: #f4f4f4;
-      color: #333;
+      background: #f0f0f0;
+      padding: 20px;
     }
     h1 {
-      color: #005f99;
+      text-align: center;
+    }
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 15px;
+      width: 280px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .card img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid #ddd;
+      margin-bottom: 10px;
+    }
+    .card h3 {
+      margin: 10px 0 5px;
+    }
+    .card p {
+      margin: 3px 0;
+      color: #333;
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
+  <h1>Volunteer Profiles</h1>
+  <div class="container" id="profiles"></div>
 
-  <h1>Welcome to My First Ever Website</h1>
-  <p>This is a simple static HTML page. You can host it on GitHub Pages, Netlify, Vercel, or Cloudflare Pages for free!</p>
+  <script>
+    async function fetchData() {
+      const response = await fetch("YOUR_SHEET_CSV_LINK");
+      const text = await response.text();
 
+      const rows = text.trim().split('\n').map(row => row.split(','));
+      const [headers, ...data] = rows;
+
+      const container = document.getElementById("profiles");
+
+      data.forEach(row => {
+        const entry = Object.fromEntries(headers.map((h, i) => [h.trim(), row[i]?.trim() || ""]));
+
+        const card = document.createElement("div");
+        card.className = "card";
+
+        card.innerHTML = `
+          <img src="${entry['Passport Photo'] || 'https://via.placeholder.com/100'}" alt="Photo" />
+          <h3>${entry["Student’s Name"]}</h3>
+          <p><strong>Roll No:</strong> ${entry["Roll No."]}</p>
+          <p><strong>Gender:</strong> ${entry["Gender"]}</p>
+          <p><strong>Blood Group:</strong> ${entry["Blood Group"]}</p>
+          <p><strong>Programme:</strong> ${entry["Currently Studying Programme"]}</p>
+          <p><strong>Year:</strong> ${entry["Year of Admission"]}</p>
+          <p><strong>Department:</strong> ${entry["Department"]}</p>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    fetchData();
+  </script>
 </body>
 </html>
