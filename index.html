@@ -1,85 +1,83 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Volunteer Profiles</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f0f0f0;
+      background-color: #f4f4f4;
       padding: 20px;
-    }
-    h1 {
-      text-align: center;
     }
     .container {
       display: flex;
       flex-wrap: wrap;
-      justify-content: center;
       gap: 20px;
+      justify-content: center;
     }
     .card {
-      background: #fff;
+      background-color: #fff;
       border-radius: 10px;
-      padding: 15px;
-      width: 280px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      width: 280px;
+      padding: 20px;
       text-align: center;
     }
     .card img {
+      border-radius: 50%;
       width: 100px;
       height: 100px;
       object-fit: cover;
-      border-radius: 50%;
-      border: 2px solid #ddd;
       margin-bottom: 10px;
     }
     .card h3 {
       margin: 10px 0 5px;
     }
     .card p {
-      margin: 3px 0;
-      color: #333;
-      font-size: 14px;
+      margin: 5px 0;
+      font-size: 0.9em;
+      color: #555;
     }
   </style>
 </head>
 <body>
-  <h1>Volunteer Profiles</h1>
+
+  <h1 style="text-align:center;">Volunteer Profiles</h1>
   <div class="container" id="profiles"></div>
 
   <script>
     async function fetchData() {
-      const response = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vTQzQsyW7zG7MjJEMkhI-87dgz8Ov6GMRWA6gCib2g_AQPqrT3GNdZ4F8YRrg3hRcEwgSaDOJr1JcZS/pub?gid=402553846&single=true&output=csv");
+      const response = await fetch("https://docs.google.com/spreadsheets/d/e/YOUR_SHEET_ID/pub?output=csv");
       const text = await response.text();
 
-      const rows = text.trim().split('\n').map(row => row.split(','));
+      const rows = text.trim().split("\n").map(row => row.split(","));
       const [headers, ...data] = rows;
 
-      const container = document.getElementById("profiles");
+      const profiles = data.map(row => {
+        const record = Object.fromEntries(headers.map((h, i) => [h.trim(), row[i]]));
 
-      data.forEach(row => {
-        const entry = Object.fromEntries(headers.map((h, i) => [h.trim(), row[i]?.trim() || ""]));
-
-        const card = document.createElement("div");
-        card.className = "card";
-
-        card.innerHTML = `
-          <img src="${entry['Passport Photo'] || 'https://via.placeholder.com/100'}" alt="Photo" />
-          <h3>${entry["Student Name"]}</h3>
-          <p><strong>Roll No:</strong> ${entry["Roll No."]}</p>
-          <p><strong>Gender:</strong> ${entry["Gender"]}</p>
-          <p><strong>Blood Group:</strong> ${entry["Blood Group"]}</p>
-          <p><strong>Programme:</strong> ${entry["Currently Studying Programme"]}</p>
-          <p><strong>Year:</strong> ${entry["Year of Admission"]}</p>
-          <p><strong>Department:</strong> ${entry["Department"]}</p>
+        return `
+          <div class="card">
+            <img src="${record['Passport Photo'] || 'https://via.placeholder.com/100'}" alt="${record['Student Name']}">
+            <h3>${record['Student Name']}</h3>
+            <p><strong>Roll No:</strong> ${record['Roll No']}</p>
+            <p><strong>Mobile:</strong> ${record['Mobile']}</p>
+            <p><strong>Email:</strong> ${record['Email']}</p>
+            <p><strong>DOB:</strong> ${record['Date of Birth']}</p>
+            <p><strong>Gender:</strong> ${record['Gender']}</p>
+            <p><strong>Programme:</strong> ${record['Currently Studying Programme']}</p>
+            <p><strong>Year:</strong> ${record['Year of Admission']}</p>
+            <p><strong>Department:</strong> ${record['Department']}</p>
+          </div>
         `;
+      }).join("");
 
-        container.appendChild(card);
-      });
+      document.getElementById("profiles").innerHTML = profiles;
     }
 
     fetchData();
   </script>
+
 </body>
 </html>
