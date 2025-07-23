@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Volunteer Profiles</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Volunteer Profiles</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -18,17 +18,17 @@
 
   <div class="container" id="profiles"></div>
 
-<script src="data.js"></script>
-<script>
-init({
-  sheetCsv: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQzQsyW7zG7MjJEMkhI-87dgz8Ov6GMRWA6gCib2g_AQPqrT3GNdZ4F8YRrg3hRcEwgSaDOJr1JcZS/pub?gid=402553846&single=true&output=csv",
-  containerId: "profiles",
-  filters: ["Department", "Year of Admission"],
-  searchField: "Student Name",
-  cardFields: ["Student Name","Roll No","Mobile","Email","Date of Birth","Gender","Currently Studying Programme"],
-  extraFields: ["Address","Father Name","Mother Name","Blood Group","Category"],
-  detailLink: "profile.html?roll="
-});
-</script>
+  <script src="data.js"></script>
+  <script>
+    init({
+      sheetCsv: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQzQsyW7zG7MjJEMkhI-87dgz8Ov6GMRWA6gCib2g_AQPqrT3GNdZ4F8YRrg3hRcEwgSaDOJr1JcZS/pub?gid=402553846&single=true&output=csv",
+      containerId: "profiles",
+      filters: ["Department", "Year of Admission"],
+      searchField: "Student Name",
+      cardFields: ["Roll No","Mobile","Email","Date of Birth","Gender","Currently Studying Programme"],
+      extraFields: ["Address","Father Name","Mother Name","Blood Group","Category"],
+      detailLink: "profile.html?roll="
+    });
+  </script>
 </body>
 </html>
