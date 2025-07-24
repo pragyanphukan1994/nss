@@ -2,33 +2,121 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Volunteer Profiles</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Volunteer Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body { background-color: #f9f9f9; padding: 20px; }
+    .card { margin-bottom: 20px; }
+    .profile-img { width: 100%; height: 200px; object-fit: cover; }
+  </style>
 </head>
 <body>
 
-  <h1>Volunteer Profiles</h1>
+<div class="container">
+  <h2 class="text-center mb-4">Volunteer Dashboard (Read Only)</h2>
 
-  <div class="controls">
-    <input type="text" id="searchInput" placeholder="Search by name...">
-    <select id="deptFilter"><option value="">All Departments</option></select>
-    <select id="yearFilter"><option value="">All Years</option></select>
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <input type="text" id="searchInput" class="form-control" placeholder="Search by Name">
+    </div>
+    <div class="col-md-6">
+      <select id="deptFilter" class="form-control">
+        <option value="">Filter by Department</option>
+      </select>
+    </div>
   </div>
 
-  <div class="container" id="profiles"></div>
+  <div class="row" id="cardContainer">
+    <!-- Cards will go here -->
+  </div>
+</div>
 
-  <script src="data.js"></script>
-  <script>
-    init({
-      sheetCsv: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQzQsyW7zG7MjJEMkhI-87dgz8Ov6GMRWA6gCib2g_AQPqrT3GNdZ4F8YRrg3hRcEwgSaDOJr1JcZS/pub?gid=402553846&single=true&output=csv",
-      containerId: "profiles",
-      filters: ["Department", "Year of Admission"],
-      searchField: "Student Name",
-      cardFields: ["Roll No","Mobile","Email","Date of Birth","Gender","Currently Studying Programme"],
-      extraFields: ["Address","Father Name","Mother Name","Blood Group","Category"],
-      detailLink: "profile.html?roll="
-    });
-  </script>
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbwO0EsOllyVVDGVrVvLxJVibssgVQu3Gu3ZEYwcCqsXtsPXAnygWV5nLrrAgO2ZWxgg/exec";
+let allData = [];
+
+async function fetchData() {
+  try {
+    const res = await fetch(API_URL);
+    const data = await res.json();
+    allData = data;
+    populateDeptFilter(data);
+    displayCards(data);
+  } catch (err) {
+    alert("Error fetching data: " + err);
+  }
+}
+
+function populateDeptFilter(data) {
+  const deptSet = new Set(data.map(d => d.Department).filter(Boolean));
+  const deptFilter = document.getElementById("deptFilter");
+  deptSet.forEach(dept => {
+    const opt = document.createElement("option");
+    opt.value = dept;
+    opt.textContent = dept;
+    deptFilter.appendChild(opt);
+  });
+}
+
+function displayCards(data) {
+  const container = document.getElementById("cardContainer");
+  container.innerHTML = "";
+
+  data.forEach(entry => {
+    const card = document.createElement("div");
+    card.className = "col-md-4";
+
+    const imgSrc = formatDriveImageURL(entry["Passport Photo"]);
+
+    card.innerHTML = `
+      <div class="card shadow-sm">
+        <img src="${imgSrc}" class="card-img-top profile-img" alt="Photo">
+        <div class="card-body">
+          <h5 class="card-title">${entry["Student Name"]}</h5>
+          <p class="card-text">
+            <strong>Roll No:</strong> ${entry["Roll No"] || ''}<br>
+            <strong>Email:</strong> ${entry.Email || ''}<br>
+            <strong>Mobile:</strong> ${entry.Mobile || ''}<br>
+            <strong>DOB:</strong> ${formatDate(entry["Date of Birth"])}<br>
+            <strong>Gender:</strong> ${entry.Gender || ''}<br>
+            <strong>Programme:</strong> ${entry["Currently Studying Programme"] || ''}<br>
+            <strong>Department:</strong> ${entry.Department || ''}
+          </p>
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function formatDriveImageURL(driveURL) {
+  const match = driveURL.match(/[-\w]{25,}/);
+  return match ? `https://drive.google.com/uc?export=view&id=${match[0]}` : "";
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  return d.toLocaleDateString();
+}
+
+document.getElementById("searchInput").addEventListener("input", filterData);
+document.getElementById("deptFilter").addEventListener("change", filterData);
+
+function filterData() {
+  const name = document.getElementById("searchInput").value.toLowerCase();
+  const dept = document.getElementById("deptFilter").value;
+  const filtered = allData.filter(entry => {
+    return (
+      (!name || entry["Student Name"].toLowerCase().includes(name)) &&
+      (!dept || entry.Department === dept)
+    );
+  });
+  displayCards(filtered);
+}
+
+fetchData();
+</script>
 </body>
 </html>
